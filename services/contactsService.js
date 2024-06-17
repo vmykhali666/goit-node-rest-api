@@ -1,65 +1,45 @@
-import fs from 'fs/promises';
-import { nanoid } from 'nanoid';
-import path from 'path';
 
-const contactsPath = path.resolve('db', 'contacts.json');
+import Contact from '../models/Contact.js';
 
-const readContacts = async () => {
-    const contactsData = await fs.readFile(contactsPath, 'utf-8');
-    return JSON.parse(contactsData);
-};
+/**
+ * Gets all contacts from the db
+ * @returns {Array} array of contacts
+ */
+const getContactList = async () => await Contact.find({});
 
-const writeContacts = async (contacts) => {
-    await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-};
+/**
+ * Gets a contact by Id
+ * @param {string} contactId
+ * @returns {object|null} contact or null if not found
+ */
+const getContactById = async (contactId) => await Contact.findById(contactId);
 
-const getContactList = async () => {
-    const contacts = await readContacts();
-    return contacts;
-};
+/**
+ * Delets contact by Id from the db
+ * @param {string} contactId
+ * @returns {object|null} deleted contact or null if contact not exists
+ */
+const deleteContact = async (contactId) => await Contact.findByIdAndDelete(contactId);
 
-const getContactById = async (contactId) => {
-    const contacts = await readContacts();
-    const contact = contacts.find((item) => item.id === contactId);
-    return contact || null;
-};
+/**
+ * Adds a contact to the db
+ * @param {Object} contact - the contact to be added to the db
+ * @returns {Object} new contact
+ */
+const addContact = async (data) => await Contact.create(data);
 
-const removeContact = async (contactId) => {
-    const contacts = await readContacts();
-    const index = contacts.findIndex((contact) => contact.id === contactId);
-    if (index === -1) return null;
-    const [removedContact] = contacts.splice(index, 1);
-    await writeContacts(contacts);
-    return removedContact;
-};
-
-const addContact = async ({ name, email, phone }) => {
-    const contacts = await readContacts();
-    const newContact = { id: nanoid(), name, email, phone };
-    contacts.push(newContact);
-    await writeContacts(contacts);
-    return newContact;
-};
-
-const updateContact = async (id, newContact) => {
-    const contacts = await readContacts();
-    const index = contacts.findIndex((contact) => contact.id === id);
-    if (index === -1) {
-        return null;
-    }
-    const contact = contacts[index];
-    contacts[index] = {
-        ...contact,
-        ...newContact,
-    };
-    await writeContacts(contacts);
-    return contacts[index];
-};
+/**
+ * Updates a contact in the db
+ * @param {string} id - the contact id to be updated in the db
+ * @param {Object} newContact - updated contact
+ * @returns {Object} updated contact
+ */
+const updateContact = async (id, update) => await Contact.findByIdAndUpdate(id, update);
 
 export default {
-    getContactList,
-    getContactById,
-    removeContact,
-    addContact,
-    updateContact,
+  getContactList,
+  getContactById,
+  deleteContact,
+  addContact,
+  updateContact,
 };

@@ -1,5 +1,5 @@
 import contactsService from "../services/contactsService.js";
-import controllerWrapper from "../helpers/controllerWrapper.js";
+import controllerWrapper from "../decorators/controllerWrapper.js";
 
 const getAllContacts = async (req, res) => {
     try {
@@ -29,7 +29,7 @@ const getOneContact = async (req, res) => {
 const deleteContact = async (req, res) => {
     try {
         const { id } = req.params;
-        const contact = await contactsService.removeContact(id);
+        const contact = await contactsService.deleteContact(id);
 
         if (!contact) {
             res.status(404).json({ message: "Not found" });
