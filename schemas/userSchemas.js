@@ -20,3 +20,7 @@ export const loginUserSchema = Joi.object({
 export const updateUserSchema = Joi.object({
 	subscription,
 })
+
+export const verifyEmailSchema = Joi.object({
+	email: email.messages({'any.required': 'missing required field email'}),
+})
