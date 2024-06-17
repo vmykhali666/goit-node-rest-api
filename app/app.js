@@ -12,6 +12,7 @@ const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
 
 app.use(morgan(formatsLogger));
 app.use(cors());
+app.use(express.static('public'));
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 

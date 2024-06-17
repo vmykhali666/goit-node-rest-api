@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-
 import { handleSaveError, setUpdateSettings } from './hooks.js';
 import { EMAIL_REGEXP, PHONE_REGEXP } from '../constants/regExp.js';
 import { SUBSCRIPTION } from '../constants/userConstants.js';
@@ -20,19 +19,24 @@ const userSchema = new Schema(
 		subscription: {
 			type: String,
 			enum: SUBSCRIPTION,
-			default: "starter"
+			default: 'starter',
 		},
 		token: {
 			type: String,
-			default: null,
+			default: '',
+		},
+		avatarURL: {
+			type: String,
+			required: true,
 		},
 	},
 	{ versionKey: false, timestamps: true }
 );
 
 userSchema.post('save', handleSaveError);
-
 userSchema.pre('findOneAndUpdate', setUpdateSettings);
 userSchema.post('findOneAndUpdate', handleSaveError);
 
-export default model('user', userSchema);
+const User = model('User', userSchema);
+
+export default User;
