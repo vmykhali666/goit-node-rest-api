@@ -36,7 +36,7 @@ const deleteContact = async (req, res) => {
             return;
         }
 
-        res.status(200).json({ message: "Contact deleted" });
+        res.status(200).json(contact);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
     }
@@ -44,8 +44,8 @@ const deleteContact = async (req, res) => {
 
 const createContact = async (req, res) => {
     try {
-        const data = await contactsService.addContact(req.body);
-        res.status(200).json({data: data});
+        const contact = await contactsService.addContact(req.body);
+        res.status(200).json(contact);
     } catch (error) {
         res.status(500).json({ message: "Internal server error" });
     }
