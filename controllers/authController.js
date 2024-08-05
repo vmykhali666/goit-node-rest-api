@@ -3,18 +3,20 @@ import authService from '../services/authService.js';
 import gravatar from 'gravatar';
 import Jimp from 'jimp';
 import path from 'path';
+import fs from 'fs/promises';
 
 const register = controllerWrapper(async (req, res) => {
+  const generatedAvatar = gravatar.url(req.body.email);
   const { email, subscription } = await authService.register({
     ...req.body,
-    avatarURL: gravatar.url(req.body.email),
+    avatarURL: generatedAvatar,
   });
 
   res.status(201).json({
     user: {
       email,
       subscription,
-      avatarURL,
+      avatarURL: generatedAvatar,
     },
   });
 });
@@ -67,9 +69,9 @@ const updateAvatar = controllerWrapper(async (req, res) => {
   const { _id } = req.user;
   const { path: tmpPath, filename } = req.file;
   const avatarsDir = path.resolve('public', 'avatars');
-  const avatarPath = path.join(avatarsDir, filename);
-  await resizeAvatar(tmpPath, avatarPath);
-  const avatarURL = path.join('avatars', filename);
+  const avatarURL = path.join(avatarsDir, filename);
+  await fs.rename(tmpPath, avatarURL);
+  await resizeAvatar(avatarURL);
   await authService.update(_id, { avatarURL });
 
   res.status(200).json({
