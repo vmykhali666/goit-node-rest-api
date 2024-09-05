@@ -5,6 +5,7 @@ import Jimp from 'jimp';
 import path from 'path';
 import fs from 'fs/promises';
 import sendEmail from '../helpers/sendEmail.js';
+import HttpError from '../helpers/HttpError.js';
 
 const { BASE_URL } = process.env;
 
@@ -64,7 +65,7 @@ const register = controllerWrapper(async (req, res) => {
     user: {
       email,
       subscription,
-      avatarURL: generatedAvatar,
+      avatarURL,
     },
   });
 });
